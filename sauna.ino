@@ -27,7 +27,6 @@ void add_listeners() {
 bool temp_increase() {
     mgr.resetContext(); 
     WANTED_TEMPERATURE ++;
-    Serial.println(String("Temperature increased to ") + WANTED_TEMPERATURE);
     add_listeners();
     EEPROM.write(LAST_TEMP_ADDRESS, WANTED_TEMPERATURE);
     return true;
@@ -36,7 +35,6 @@ bool temp_increase() {
 bool temp_decrease() {
     mgr.resetContext(); 
     WANTED_TEMPERATURE --;
-    Serial.println(String("Temperature decreased to ") + WANTED_TEMPERATURE);
     add_listeners();
     EEPROM.write(LAST_TEMP_ADDRESS, WANTED_TEMPERATURE);
     return true;
@@ -51,8 +49,6 @@ void temperature_check() {
 }
 
 void setup() {
-    Serial.begin(9600);
-
     pinMode(HEAT_RELAY_PIN, OUTPUT);
     pinMode(TEMP_INCR_PIN, INPUT_PULLUP);
     pinMode(TEMP_DECR_PIN, INPUT_PULLUP);
@@ -61,8 +57,6 @@ void setup() {
 
     WANTED_TEMPERATURE = EEPROM.read(LAST_TEMP_ADDRESS);
     if (WANTED_TEMPERATURE > 120) WANTED_TEMPERATURE = 40;
-
-    Serial.println("Loaded");
 }
 
 USE_EVENTUALLY_LOOP(mgr)
