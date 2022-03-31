@@ -1,5 +1,6 @@
 #include <EEPROM.h>
 #include <Eventually.h>
+#include <LiquidCrystal_I2C.h>
 
 // out
 #define HEAT_RELAY_PIN 2
@@ -14,10 +15,14 @@
 
 EvtManager mgr;
 
+LiquidCrystal_I2C lcd(0x27, 20, 4);
+
 int ROOM_TEMPERATURE = 20;
 int WANTED_TEMPERATURE = 20;
 int CURRENT_TEMPERATURE = WANTED_TEMPERATURE;
 const int DIFFERENCE = 2;
+int BACKLIGHT_TIMER_INITIAL = 5; // seconds before turning off backlight
+int BACKLIGHT_TIMER = BACKLIGHT_TIMER_INITIAL; 
 
 float R1 = 10000;
 float logR2;
@@ -34,6 +39,8 @@ bool temp_increase() {
     WANTED_TEMPERATURE ++;
     add_listeners();
     EEPROM.write(LAST_TEMP_ADDRESS, WANTED_TEMPERATURE);
+
+    BACKLIGHT_TIMER = BACKLIGHT_TIMER_INITIAL;
     return true;
 }
 
@@ -42,6 +49,8 @@ bool temp_decrease() {
     WANTED_TEMPERATURE --;
     add_listeners();
     EEPROM.write(LAST_TEMP_ADDRESS, WANTED_TEMPERATURE);
+
+    BACKLIGHT_TIMER = BACKLIGHT_TIMER_INITIAL;
     return true;
 }
 
@@ -54,6 +63,22 @@ void temperature_check() {
     } else {
         digitalWrite(HEAT_RELAY_PIN, LOW);
     }   
+
+    lcd_refresh();
+}
+
+void lcd_refresh() {
+
+    if (--BACKLIGHT_TIMER <= 0) {
+      lcd.noBacklight();
+    } else {
+      lcd.backlight();
+    }
+
+    lcd.setCursor(0, 0);
+    lcd.print(String("Jelenlegi: ") + CURRENT_TEMPERATURE + String(""));
+    lcd.setCursor(0, 1);
+    lcd.print(String("Bealitott: ") + WANTED_TEMPERATURE + String(""));
 }
 
 void setup() {
@@ -62,6 +87,10 @@ void setup() {
     pinMode(TEMP_INCR_PIN, INPUT_PULLUP);
     pinMode(TEMP_DECR_PIN, INPUT_PULLUP);
     
+    lcd.init();
+    lcd.backlight();
+    lcd.setCursor(0, 0);
+
     add_listeners();
 
     WANTED_TEMPERATURE = EEPROM.read(LAST_TEMP_ADDRESS);
