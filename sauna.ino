@@ -231,7 +231,7 @@ void setup() {
 
     // Load last saved setpoint
     TARGET_TEMPERATURE = EEPROM.read(_TARGET_TEMPERATURE);
-    if (TARGET_TEMPERATURE == 255) {
+    if (TARGET_TEMPERATURE == 255 || TARGET_TEMPERATURE > 120) {
         setTargetTemperature(DEFAULT_TARGET_TEMP);
     }
 
@@ -244,8 +244,6 @@ void setup() {
     if (TEMPERATURE_STEP == 255) {
         setTemperatureStep(DEFAULT_TEMP_STEP);
     }
-
-    if (TARGET_TEMPERATURE > 120) setTargetTemperature(40);
 
     Serial.println("");
     Serial.println("Sauna controller v1.0 loaded");
