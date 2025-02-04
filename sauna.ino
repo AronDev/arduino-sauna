@@ -247,10 +247,10 @@ void setup() {
 
     Serial.println("");
     Serial.println("Sauna controller v1.0 loaded");
-    Serial.println("Author: Aron Kovacs (zipike02@gmail.com)");
+    Serial.println("Author: Aron Kovacs (aronk02@proton.me)");
     Serial.println("For help type 'help' in the console");
     Serial.println("");
-    Serial.println("Read values from EEPROM:");
+    Serial.println("Loaded values from EEPROM:");
     Serial.println(" -> TARGET_TEMPERATURE = " + String(TARGET_TEMPERATURE));
     Serial.println(" -> TEMPERATURE_DIFFERENCE = " + String(TEMPERATURE_DIFFERENCE));
     Serial.println(" -> TEMPERATURE_STEP = " + String(TEMPERATURE_STEP));
